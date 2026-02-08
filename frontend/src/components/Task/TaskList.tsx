@@ -115,7 +115,6 @@ export default function TaskList({ initialTodos, loading, onTodosChange }: TaskL
                 backgroundColor: 'var(--color-background)',
                 color: 'var(--color-foreground)',
                 border: '1px solid rgba(255,255,255,0.08)',
-                focusRing: 'var(--color-primary)'
               }}
               onKeyDown={(e) => e.key === 'Enter' && addTask()}
             />

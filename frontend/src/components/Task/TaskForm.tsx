@@ -78,7 +78,7 @@ export default function TaskForm({
             color: 'var(--color-foreground)',
             borderColor: errors.title ? 'var(--color-danger)' : 'rgba(255,255,255,0.1)',
             borderWidth: '1px',
-            focusRingColor: errors.title ? 'var(--color-danger)' : 'var(--color-primary)',
+            outlineColor: errors.title ? 'var(--color-danger)' : 'var(--color-primary)',
           }}
           placeholder="What needs to be done?"
         />

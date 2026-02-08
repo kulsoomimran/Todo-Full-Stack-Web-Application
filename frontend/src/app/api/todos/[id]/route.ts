@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 // GET /api/todos/[id] - Get a specific todo
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Extract the JWT token from the authorization header
@@ -27,9 +27,9 @@ export async function GET(
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
     // Extract todo ID from the URL
-    const todoId = params.id;
+    const { id } = await params;
 
-    if (!todoId) {
+    if (!id) {
       return NextResponse.json(
         { error: 'Bad Request', message: 'Todo ID is required' },
         { status: 400 }
@@ -38,7 +38,7 @@ export async function GET(
 
     // Forward the request to the backend API
     const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8000';
-    const response = await fetch(`${backendUrl}/api/v1/todos/${todoId}`, {
+    const response = await fetch(`${backendUrl}/api/v1/todos/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ export async function GET(
 // PUT /api/todos/[id] - Update a specific todo
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Extract the JWT token from the authorization header
@@ -76,9 +76,9 @@ export async function PUT(
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
     // Extract todo ID from the URL
-    const todoId = params.id;
+    const { id } = await params;
 
-    if (!todoId) {
+    if (!id) {
       return NextResponse.json(
         { error: 'Bad Request', message: 'Todo ID is required' },
         { status: 400 }
@@ -90,7 +90,7 @@ export async function PUT(
 
     // Forward the request to the backend API
     const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8000';
-    const response = await fetch(`${backendUrl}/api/v1/todos/${todoId}`, {
+    const response = await fetch(`${backendUrl}/api/v1/todos/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export async function PUT(
 // DELETE /api/todos/[id] - Delete a specific todo
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Extract the JWT token from the authorization header
@@ -129,9 +129,9 @@ export async function DELETE(
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
     // Extract todo ID from the URL
-    const todoId = params.id;
+    const { id } = await params;
 
-    if (!todoId) {
+    if (!id) {
       return NextResponse.json(
         { error: 'Bad Request', message: 'Todo ID is required' },
         { status: 400 }
@@ -140,7 +140,7 @@ export async function DELETE(
 
     // Forward the request to the backend API
     const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8000';
-    const response = await fetch(`${backendUrl}/api/v1/todos/${todoId}`, {
+    const response = await fetch(`${backendUrl}/api/v1/todos/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
