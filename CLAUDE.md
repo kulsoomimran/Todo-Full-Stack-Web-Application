@@ -1,8 +1,8 @@
-# Claude Code Rules
+# Claude Code Rules - Full-Stack Todos App
 
-This file is generated during init for the selected agent.
+This file defines development standards for the Full-Stack Todos App Hackathon project.
 
-You are an expert AI assistant specializing in Spec-Driven Development (SDD). Your primary goal is to work with the architext to build products.
+You are an expert AI assistant specializing in Spec-Driven Development (SDD) using the Agentic Dev Stack workflow. Your primary goal is to transform the console app into a modern multi-user web application using specialized Claude agents for each layer.
 
 ## Task context
 
@@ -206,5 +206,123 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 - `history/adr/` — Architecture Decision Records
 - `.specify/` — SpecKit Plus templates and scripts
 
+## Project Technology Stack
+
+### Agentic Dev Stack Workflow
+Follow this workflow for every feature:
+1. **Specification** → Define requirements with `/sp.specify`
+2. **Planning** → Generate architecture with `/sp.plan`
+3. **Task Breakdown** → Create testable tasks with `/sp.tasks`
+4. **Implementation** → Execute via specialized agents with `/sp.implement`
+
+### Technology Layers and Agent Assignment
+
+| Layer | Technology | Agent | Purpose |
+|-------|-----------|-------|---------|
+| **Frontend** | Next.js 16+ (App Router) | `frontend-nextjs-generator` | Build responsive UI components and pages |
+| **Backend** | Python FastAPI | `fastapi-backend-developer` | Create RESTful API endpoints |
+| **Database** | Neon PostgreSQL (Serverless) | `neon-postgresql-operator` | Design schema, migrations, queries |
+| **ORM** | SQLModel | Backend Agent | Type-safe SQL queries with Pydantic models |
+| **Authentication** | Better Auth | `auth-agent` | Implement signup/signin, JWT token management |
+
+### Authentication Flow (JWT-Based)
+```
+User Login (Frontend)
+  ↓ Better Auth creates session
+  ↓ Issues JWT token
+  ↓
+API Request (Frontend + Token)
+  → Authorization: Bearer <token>
+  ↓
+Backend Verification
+  ↓ Extract token from header
+  ↓ Verify signature with shared secret
+  ↓ Decode to get user ID/email
+  ↓
+User-Scoped Response
+  ↓ Filter data by user_id
+  ↓ Return only user's tasks
+```
+
+### Project Objectives (Basic Level)
+
+**In Scope:**
+- Multi-user task management web application
+- Persistent storage with Neon PostgreSQL
+- RESTful API with user-scoped endpoints
+- Responsive Next.js frontend
+- Secure authentication with Better Auth + JWT
+
+**5 Basic Features to Implement:**
+1. User Authentication (Signup/Signin)
+2. Create Todos
+3. Read/List Todos (user-scoped)
+4. Update Todos
+5. Delete Todos
+
+**Out of Scope:**
+- Advanced features (collaboration, real-time sync, ML)
+- UI customization beyond responsive design
+- Advanced analytics or reporting
+
+### Environment and Configuration
+- `.env` file: Store database URL, JWT secret, Better Auth config
+- Never hardcode secrets or tokens
+- Use environment variables for all sensitive data
+
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+
+### Agent-Specific Guidelines
+
+#### Frontend Agent (`frontend-nextjs-generator`)
+- Use Next.js App Router for routing
+- Create production-ready components with Tailwind CSS
+- Implement responsive design (mobile-first)
+- Follow accessibility standards (WCAG 2.1)
+- Use TypeScript for type safety
+
+#### Backend Agent (`fastapi-backend-developer`)
+- Organize routes by resource (e.g., `/api/todos`, `/api/auth`)
+- Use SQLModel for type-safe ORM
+- Implement proper error handling and validation
+- Add request/response logging middleware
+- Return consistent JSON responses with proper status codes
+
+#### Database Agent (`neon-postgresql-operator`)
+- Design normalized schema with proper indexes
+- Create migrations for schema changes
+- Implement user-scoped queries with proper filtering
+- Use connection pooling for serverless environment
+- Set up proper cascade rules and constraints
+
+#### Auth Agent (`auth-agent`)
+- Configure Better Auth with email/password provider
+- Generate and manage JWT tokens with secure secret
+- Implement middleware to verify tokens
+- Handle token refresh and expiration
+- Secure password hashing (use Better Auth's built-in)
+
+### Critical Security Considerations
+1. **JWT Secret**: Store securely in `.env`, never commit
+2. **CORS**: Configure frontend domain in backend CORS settings
+3. **SQL Injection**: Use parameterized queries (SQLModel handles this)
+4. **User Scoping**: Always filter by authenticated user_id in queries
+5. **Token Validation**: Verify JWT signature on every protected endpoint
+6. **Password Security**: Never store passwords in logs or responses
+
+### Development Workflow
+1. Create feature spec with `/sp.specify`
+2. Review and refine spec with user
+3. Generate plan with `/sp.plan` (identifies agent assignments)
+4. Break into tasks with `/sp.tasks`
+5. Implement layer by layer using appropriate agents
+6. Create PHR (Prompt History Record) for each major task
+7. Suggest ADR when architectural decisions are made
+
+## Active Technologies
+- Python 3.11 (required by FastAPI and SQLModel) + FastAPI, SQLModel, Neon Serverless PostgreSQL connector (001-todo-backend)
+- Neon Serverless PostgreSQL database with SQLModel ORM (001-todo-backend)
+
+## Recent Changes
+- 001-todo-backend: Added Python 3.11 (required by FastAPI and SQLModel) + FastAPI, SQLModel, Neon Serverless PostgreSQL connector
