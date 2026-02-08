@@ -128,28 +128,49 @@ export const authService = {
 
       console.log('Signin response status:', response.status);
 
+      // Attempt to parse JSON response (BFF may return redirect info)
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        // ignore parse error; data will remain null
+      }
+
       if (!response.ok) {
-        let errorData;
-        try {
-          errorData = await response.json();
-        } catch (parseError) {
-          // If response is not JSON, create a generic error
+        let errorData = data;
+        if (!errorData) {
           errorData = { detail: `Signin failed with status: ${response.status}` };
         }
-
         console.error('Signin error response:', errorData);
         throw new Error(errorData.detail || `Signin failed with status: ${response.status}`);
       }
 
-      const data: AuthResponse = await response.json();
-      console.log('Signin successful, received user data:', data.user);
+      // If backend returned a redirect URL (fingerprint/challenge page), navigate the browser to it
+      if (data && data.redirect) {
+        if (typeof window !== 'undefined') {
+          console.log('Redirecting browser to backend for fingerprint challenge:', data.redirect);
+          window.location.replace(data.redirect);
+          return Promise.resolve({ user: null as any });
+        }
+      }
 
-      // Save the token for subsequent requests
-      saveToken(data.access_token);
+      if (!data) {
+        throw new Error('Signin failed: empty response from server');
+      }
 
-      return { user: data.user };
+      // Assume valid AuthResponse
+      const authData: AuthResponse = data;
+      console.log('Signin successful, received user data:', authData.user);
+
+      // Save the token IMMEDIATELY for subsequent requests and getUser() verification
+      saveToken(authData.access_token);
+      console.log('Token saved to sessionStorage, can now verify via getUser()');
+
+      return { user: authData.user };
     } catch (error: any) {
       console.error('Signin error:', error);
+      // Clear token on error
+      saveToken(null);
 
       // Check if it's a network error
       if (error instanceof TypeError && error.message.includes('fetch')) {
@@ -178,9 +199,19 @@ export const authService = {
    * Get the current user if authenticated (by checking token validity)
    */
   getUser: async (): Promise<CurrentUser | null> => {
+    // Ensure we have the latest token (fallback to sessionStorage)
+    const stored = getTokenFromStorage();
+    if (!currentToken && stored) {
+      currentToken = stored;
+      console.log('Loaded token from sessionStorage for user verification');
+    }
+
     if (!currentToken) {
+      console.log('No token available, returning null user');
       return null;
     }
+
+    console.log('Attempting to decode token for user info');
 
     // In a production implementation, we'd have an endpoint to verify and get user details
     // For now, we'll validate the token format and decode it safely
@@ -213,17 +244,14 @@ export const authService = {
         return null;
       }
 
-      // In a real implementation, we'd call an API endpoint to verify the token
-      // For now, we'll return the decoded user info but with a warning in production
-      if (process.env.NODE_ENV === 'production') {
-        console.warn('Warning: User info is being decoded from JWT without verification. ' +
-                     'In production, use an API endpoint to verify the token and get user info.');
-      }
-
-      return {
+      const user: CurrentUser = {
         id: payload.sub,
         email: payload.email || payload.email_address || payload.email_addr || payload.username || payload.name,
       };
+
+      console.log('Successfully decoded token, user:', user);
+
+      return user;
     } catch (error) {
       console.error('Get user error:', error);
       return null;

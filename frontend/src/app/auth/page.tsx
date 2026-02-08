@@ -35,13 +35,19 @@ export default function AuthPage() {
         }
 
         await authService.signUp(email, password);
-        await refreshUser();
-        router.push('/dashboard');
       } else {
         await authService.signIn(email, password);
-        await refreshUser();
-        router.push('/dashboard');
       }
+
+      // After signin/signup, refresh user to get updated auth state
+      // This ensures the JWT token is decoded and user context is set
+      await refreshUser();
+
+      // Only redirect after refreshUser completes and user state is set
+      // The auth/layout.tsx will also redirect, so we use a small delay to ensure state propagates
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 100);
     } catch (err: any) {
       let msg = 'Something went wrong. Please try again.';
       if (err.message?.includes('401')) msg = 'Invalid email or password.';

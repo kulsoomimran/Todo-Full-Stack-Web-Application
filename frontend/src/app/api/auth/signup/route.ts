@@ -19,9 +19,17 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(body),
     });
 
-    const data = await response.json();
-
-    return NextResponse.json(data, { status: response.status });
+    const text = await response.text();
+    try {
+      const parsed = JSON.parse(text);
+      return NextResponse.json(parsed, { status: response.status });
+    } catch (e) {
+      console.warn('Backend returned non-JSON response for signup:', text);
+      return NextResponse.json(
+        { error: response.ok ? undefined : 'Backend error', body: text },
+        { status: response.status }
+      );
+    }
   } catch (error) {
     console.error('Error in POST /api/auth/signup:', error);
     return NextResponse.json(
