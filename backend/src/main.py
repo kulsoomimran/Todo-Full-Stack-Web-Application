@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
@@ -26,9 +27,20 @@ app.include_router(auth_router, prefix="/api/v1", tags=["auth"])
 app.include_router(todo_router, prefix="/api/v1", tags=["todos"])
 
 # Add CORS middleware
+allowed_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://todo-full-stack-web-application-sigma.vercel.app",
+]
+
+# Add environment variable for additional origins if needed
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    allowed_origins.append(frontend_url)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],  # Add your frontend origins
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
