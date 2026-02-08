@@ -1,16 +1,20 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import Providers from './Providers';
 
 const inter = Inter({ subsets: ['latin'] });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: 'TaskFlow - Organize Your Tasks Effortlessly',
   description: 'TaskFlow: A modern, elegant task management application with secure authentication. Organize, track, and complete your tasks with ease.',
   keywords: 'task management, todo app, productivity, organize tasks',
   authors: [{ name: 'TaskFlow Team' }],
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
   openGraph: {
     title: 'TaskFlow - Organize Your Tasks Effortlessly',
