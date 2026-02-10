@@ -12,9 +12,12 @@ export const dynamic = 'force-dynamic';
 // GET /api/todos/[id] - Get a specific todo
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Extract todo ID from the URL
+    const { id } = await params;
+
     // Extract the JWT token from the authorization header
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -26,10 +29,7 @@ export async function GET(
 
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
-    // Extract todo ID from the URL
-    const todoId = params.id;
-
-    if (!todoId) {
+    if (!id) {
       return NextResponse.json(
         { error: 'Bad Request', message: 'Todo ID is required' },
         { status: 400 }
@@ -37,16 +37,18 @@ export async function GET(
     }
 
     // Forward the request to the backend API
-    const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8000';
-    const response = await fetch(`${backendUrl}/api/v1/todos/${todoId}`, {
+    const backendUrl = (process.env.BACKEND_API_URL || 'https://kulsoomimran-todos-app.hf.space/').replace(/\/+$/, '');
+    console.log('BFF todos/[id] GET: resolved BACKEND_API_URL=', backendUrl, 'id=', id);
+    const response = await fetch(`${backendUrl}/api/v1/todos/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
     });
-
     const text = await response.text();
+    console.log('BFF todos/[id] GET: upstream response status=', response.status, 'content-type=', response.headers.get('content-type'));
+    console.log('BFF todos/[id] GET: upstream body (first 1000 chars)=', text.slice(0, 1000));
     try {
       const parsed = JSON.parse(text);
       return NextResponse.json(parsed, { status: response.status });
@@ -69,9 +71,12 @@ export async function GET(
 // PUT /api/todos/[id] - Update a specific todo
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Extract todo ID from the URL
+    const { id } = await params;
+
     // Extract the JWT token from the authorization header
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -83,10 +88,7 @@ export async function PUT(
 
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
-    // Extract todo ID from the URL
-    const todoId = params.id;
-
-    if (!todoId) {
+    if (!id) {
       return NextResponse.json(
         { error: 'Bad Request', message: 'Todo ID is required' },
         { status: 400 }
@@ -97,8 +99,9 @@ export async function PUT(
     const body = await request.json();
 
     // Forward the request to the backend API
-    const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8000';
-    const response = await fetch(`${backendUrl}/api/v1/todos/${todoId}`, {
+    const backendUrl = (process.env.BACKEND_API_URL || 'https://kulsoomimran-todos-app.hf.space/').replace(/\/+$/, '');
+    console.log('BFF todos/[id] PUT: resolved BACKEND_API_URL=', backendUrl, 'id=', id);
+    const response = await fetch(`${backendUrl}/api/v1/todos/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -106,8 +109,9 @@ export async function PUT(
       },
       body: JSON.stringify(body),
     });
-
     const text = await response.text();
+    console.log('BFF todos/[id] PUT: upstream response status=', response.status, 'content-type=', response.headers.get('content-type'));
+    console.log('BFF todos/[id] PUT: upstream body (first 1000 chars)=', text.slice(0, 1000));
     try {
       const parsed = JSON.parse(text);
       return NextResponse.json(parsed, { status: response.status });
@@ -130,9 +134,12 @@ export async function PUT(
 // DELETE /api/todos/[id] - Delete a specific todo
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Extract todo ID from the URL
+    const { id } = await params;
+
     // Extract the JWT token from the authorization header
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -144,10 +151,7 @@ export async function DELETE(
 
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
-    // Extract todo ID from the URL
-    const todoId = params.id;
-
-    if (!todoId) {
+    if (!id) {
       return NextResponse.json(
         { error: 'Bad Request', message: 'Todo ID is required' },
         { status: 400 }
@@ -155,8 +159,9 @@ export async function DELETE(
     }
 
     // Forward the request to the backend API
-    const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8000';
-    const response = await fetch(`${backendUrl}/api/v1/todos/${todoId}`, {
+    const backendUrl = (process.env.BACKEND_API_URL || 'https://kulsoomimran-todos-app.hf.space/').replace(/\/+$/, '');
+    console.log('BFF todos/[id] DELETE: resolved BACKEND_API_URL=', backendUrl, 'id=', id);
+    const response = await fetch(`${backendUrl}/api/v1/todos/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -169,6 +174,8 @@ export async function DELETE(
     }
 
     const text = await response.text();
+    console.log('BFF todos/[id] DELETE: upstream response status=', response.status, 'content-type=', response.headers.get('content-type'));
+    console.log('BFF todos/[id] DELETE: upstream body (first 1000 chars)=', text.slice(0, 1000));
     try {
       const parsed = JSON.parse(text);
       return NextResponse.json(parsed, { status: response.status });

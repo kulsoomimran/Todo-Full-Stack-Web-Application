@@ -33,8 +33,11 @@ export const apiClient = {
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  'https://kulsoomimran-todos-app.hf.space';
 
-    const requestUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/api/v1${url}`;
+const requestUrl = `${BASE_URL}/api/v1${url}`;
 
     return fetch(requestUrl, {
       ...options,

@@ -21,11 +21,13 @@ export async function GET(request: NextRequest) {
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
     // Forward the request to the backend API
-    const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8000';
+    const backendUrl = (process.env.BACKEND_API_URL || 'https://kulsoomimran-todos-app.hf.space/').replace(/\/+$/, '');
+    console.log('BFF todos GET: resolved BACKEND_API_URL=', backendUrl);
     const searchParams = request.nextUrl.searchParams;
     const completed = searchParams.get('completed');
 
     let apiUrl = `${backendUrl}/api/v1/todos`;
+    console.log('BFF todos GET: upstream URL=', apiUrl);
     if (completed !== null) {
       apiUrl += `?completed=${completed}`;
     }
@@ -37,8 +39,9 @@ export async function GET(request: NextRequest) {
         'Authorization': `Bearer ${token}`,
       },
     });
-
     const text = await response.text();
+    console.log('BFF todos GET: upstream response status=', response.status, 'content-type=', response.headers.get('content-type'));
+    console.log('BFF todos GET: upstream body (first 1000 chars)=', text.slice(0, 1000));
     try {
       const parsed = JSON.parse(text);
       return NextResponse.json(parsed, { status: response.status });
@@ -76,7 +79,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     // Forward the request to the backend API
-    const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8000';
+    const backendUrl = (process.env.BACKEND_API_URL || 'https://kulsoomimran-todos-app.hf.space/').replace(/\/+$/, '');
+    console.log('BFF todos POST: resolved BACKEND_API_URL=', backendUrl);
     const response = await fetch(`${backendUrl}/api/v1/todos`, {
       method: 'POST',
       headers: {
@@ -85,8 +89,9 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify(body),
     });
-
     const text = await response.text();
+    console.log('BFF todos POST: upstream response status=', response.status, 'content-type=', response.headers.get('content-type'));
+    console.log('BFF todos POST: upstream body (first 1000 chars)=', text.slice(0, 1000));
     try {
       const parsed = JSON.parse(text);
       return NextResponse.json(parsed, { status: response.status });

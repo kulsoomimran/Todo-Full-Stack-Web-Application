@@ -10,7 +10,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     // Forward the request to the backend API
-    const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8000';
+    const backendUrl = (process.env.BACKEND_API_URL || 'https://kulsoomimran-todos-app.hf.space/').replace(/\/+$/, '');
+    console.log('BFF signin: resolved BACKEND_API_URL=', backendUrl);
     const response = await fetch(`${backendUrl}/api/v1/auth/signin`, {
       method: 'POST',
       headers: {
@@ -21,6 +22,8 @@ export async function POST(request: NextRequest) {
     });
 
     const text = await response.text();
+    console.log('BFF signin: upstream response status=', response.status, 'content-type=', response.headers.get('content-type'));
+    console.log('BFF signin: upstream body (first 1000 chars)=', text.slice(0, 1000));
     try {
       const parsed = JSON.parse(text);
       // Forward any set-cookie headers from backend to client
