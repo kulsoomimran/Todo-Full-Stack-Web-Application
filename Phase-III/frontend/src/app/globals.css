@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* DARK THEME ONLY - Force dark colors as default */
+  --color-foreground: #f9fafb; /* light text for dark bg */
+  --color-background: #0b1220; /* very dark bg */
+  --color-surface: #071029; /* slightly lighter surface */
+  --color-muted: #9ca3af; /* muted light gray */
+  --color-primary: #9d9ff5; /* indigo primary */
+  --color-primary-hover: #4f46e5; /* darker indigo */
+  --color-success: #16a34a; /* green */
+  --color-danger: #fb7185; /* red */
+  --focus-ring: 3px;
+}
+
+/* Respect system dark mode but default to dark */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-foreground: #f9fafb;
+    --color-background: #0b1220;
+    --color-surface: #071029;
+    --color-muted: #9ca3af;
+    --color-primary: #9d9ff5;
+    --color-primary-hover: #4f46e5;
+    --color-success: #16a34a;
+    --color-danger: #fb7185;
+    --focus-ring: 3px;
+  }
+}
+
+body {
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base element styles to improve contrast and focus states */
+h1, h2, h3, h4, h5 {
+  color: var(--color-foreground);
+  line-height: 1.25;
+}
+
+button {
+  color: #ffffff;
+  background-color: var(--color-primary);
+}
+
+button:focus, .focus-visible:focus {
+  outline: none;
+  box-shadow: 0 0 0 var(--focus-ring) rgba(79,70,229,0.18);
+}
+
+input, textarea, select {
+  background-color: var(--color-surface);
+  color: var(--color-foreground);
+  border: 1px solid rgba(16,24,40,0.06);
+}
+
+.card {
+  background-color: var(--color-surface);
+  color: var(--color-foreground);
+}
+
+/* Ensure disabled states still meet contrast */
+.disabled, .btn-disabled, button[disabled] {
+  background-color: #9ca3af;
+  color: #ffffff;
+  opacity: 1;
+}
+
+/* Utility overrides for Tailwind classes to enforce dark theme by default */
+/* Backgrounds - all should be dark theme variations */
+.bg-gray-50 { background-color: var(--color-surface) !important; }
+.bg-gray-100 { background-color: var(--color-surface) !important; }
+.bg-gray-300 { background-color: #0f1724 !important; }
+.bg-white { background-color: var(--color-surface) !important; }
+
+/* Text colors - ensure light text on dark backgrounds */
+.text-gray-700 { color: #e5e7eb !important; }
+.text-gray-500 { color: #d1d5db !important; }
+.text-gray-900 { color: #f9fafb !important; }
+.text-gray-600 { color: #d1d5db !important; }
+
+/* Primary action styles */
+.bg-indigo-600 { background-color: var(--color-primary) !important; color: #fff !important; }
+.hover\:bg-indigo-700:hover { background-color: var(--color-primary-hover) !important; }
+.focus\:ring-indigo-500:focus { box-shadow: 0 0 0 var(--focus-ring) rgba(99,102,241,0.2) !important; }
+
+/* Success / positive */
+.bg-green-600 { background-color: var(--color-success) !important; color: #fff !important; }
+.hover\:bg-green-700:hover { filter: brightness(0.9) !important; }
+
+/* Error/danger */
+.bg-red-50 { background-color: rgba(251, 113, 133, 0.08) !important; }
+.text-red-400 { color: #fb7185 !important; }
+.text-red-800 { color: #fb7185 !important; }
+
+/* Buttons and inputs */
+.inline-flex.items-center.px-4.py-2 { border-radius: 0.5rem; }
+button.inline-flex { box-shadow: none; }
+
+/* Form card surfaces */
+.bg-gray-50.p-4.rounded-md { background-color: var(--color-surface) !important; border: 1px solid rgba(255,255,255,0.04); }
+
+/* Make links and interactive elements clearly visible */
+a { color: var(--color-primary); }
+a:hover { color: var(--color-primary-hover); }
+
+/* Ensure placeholders are visible on dark backgrounds */
+::placeholder { color: rgba(255,255,255,0.6) !important; }
+
+/* Subtle card shadow */
+.shadow-sm { box-shadow: 0 4px 12px rgba(2,6,23,0.6); }
+
+/* Improve spacing for key elements */
+main, .container { padding: 1.25rem; }
