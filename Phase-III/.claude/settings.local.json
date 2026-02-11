@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash .specify/scripts/bash/check-prerequisites.sh)",
+      "Bash(touch backend/src/models/__init__.py backend/src/api/__init__.py backend/src/database/__init__.py backend/src/services/__init__.py backend/src/schemas/__init__.py backend/src/core/__init__.py)",
+      "Bash(.venvScriptspython -m pytest tests/integration/test_auth_todo_integration.py -v)",
+      "Bash(python -m pip install:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(dir frontendsrcservices)"
+    ]
+  }
+}
