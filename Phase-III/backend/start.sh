@@ -14,4 +14,4 @@ if [ -f "requirements.txt" ]; then
 fi
 
 # Run the application
-uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn src.main:app --host 0.0.0.0 --port 8001 --reload

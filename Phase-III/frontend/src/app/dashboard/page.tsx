@@ -5,16 +5,19 @@ import { useAuth } from '../AuthProvider';
 import { useRouter } from 'next/navigation';
 import { taskService } from '../../services/task-service';
 import TaskList from '../../components/Task/TaskList';
+import ChatWindow from '../../components/Chat/ChatWindow';
+import DashboardLayout from '../../components/Layout/DashboardLayout';
 
 /**
  * Dashboard Page Component
- * Displays welcome message for authenticated users and redirects if not authenticated
+ * Main hub with sidebar navigation for Todos and AI Agent
  */
 export default function DashboardPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [tasks, setTasks] = useState<any[]>([]);
   const [loadingTasks, setLoadingTasks] = useState(true);
+  const [activeSection, setActiveSection] = useState<'todos' | 'ai-agent'>('todos');
 
   // If user is not logged in, redirect to auth page
   useEffect(() => {
@@ -48,10 +51,10 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-background)' }}>
+      <div className="min-h-screen flex items-center justify-center bg-gray-950">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent' }}></div>
-          <p className="mt-4 text-lg" style={{ color: 'var(--color-muted)' }}>Loading your tasks...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-700 border-t-blue-500"></div>
+          <p className="mt-4 text-lg text-gray-400">Loading your workspace...</p>
         </div>
       </div>
     );
@@ -62,29 +65,21 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold" style={{ color: 'var(--color-foreground)' }}>
-          Welcome back, {user.email?.split('@')[0] || 'User'}! 👋
-        </h1>
-        <p className="mt-2 text-lg" style={{ color: 'var(--color-muted)' }}>
-          Organize and track all your tasks in one place.
-        </p>
-      </div>
-
-      <div 
-        className="rounded-2xl p-8 shadow-lg"
-        style={{ 
-          backgroundColor: 'var(--color-surface)',
-          border: '1px solid rgba(255,255,255,0.04)'
-        }}
-      >
-        <TaskList
-          initialTodos={tasks}
-          loading={loadingTasks}
-          onTodosChange={setTasks}
-        />
-      </div>
-    </div>
+    <DashboardLayout activeSection={activeSection} onSectionChange={setActiveSection}>
+      {/* Content Area */}
+      {activeSection === 'todos' ? (
+        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+          <TaskList
+            initialTodos={tasks}
+            loading={loadingTasks}
+            onTodosChange={setTasks}
+          />
+        </div>
+      ) : (
+        <div className="bg-gray-900 rounded-lg border border-gray-800" style={{ height: '700px' }}>
+          <ChatWindow />
+        </div>
+      )}
+    </DashboardLayout>
   );
 }

@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "error_responses",
+  "description": "Standardized error response format for all MCP tools",
+  "type": "object",
+  "properties": {
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "VALIDATION_ERROR",
+            "AUTH_ERROR",
+            "PERMISSION_DENIED",
+            "NOT_FOUND",
+            "SERVER_ERROR"
+          ],
+          "description": "Error code indicating the type of error"
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable error message"
+        },
+        "details": {
+          "type": "object",
+          "description": "Optional additional context about the error",
+          "additionalProperties": true
+        }
+      },
+      "required": ["code", "message"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["error"],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Invalid input data",
+        "details": {
+          "field": "title",
+          "constraint": "String should have at least 1 character"
+        }
+      }
+    },
+    {
+      "error": {
+        "code": "AUTH_ERROR",
+        "message": "Invalid user ID format: "
+      }
+    },
+    {
+      "error": {
+        "code": "NOT_FOUND",
+        "message": "Todo with id 42 not found"
+      }
+    },
+    {
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "Access denied to todo with id 42"
+      }
+    },
+    {
+      "error": {
+        "code": "SERVER_ERROR",
+        "message": "Internal server error"
+      }
+    }
+  ],
+  "definitions": {
+    "error_codes": {
+      "VALIDATION_ERROR": {
+        "description": "Invalid input data (HTTP 400)",
+        "typical_details": ["field", "constraint", "value"]
+      },
+      "AUTH_ERROR": {
+        "description": "Missing or invalid user_id (HTTP 401)",
+        "typical_details": []
+      },
+      "PERMISSION_DENIED": {
+        "description": "User doesn't own the resource (HTTP 403)",
+        "typical_details": ["resource_id", "resource_type"]
+      },
+      "NOT_FOUND": {
+        "description": "Resource doesn't exist (HTTP 404)",
+        "typical_details": ["resource_id", "resource_type"]
+      },
+      "SERVER_ERROR": {
+        "description": "Internal server error (HTTP 500)",
+        "typical_details": []
+      }
+    }
+  }
+}

@@ -26,7 +26,11 @@ else:
 engine = create_engine(
     DATABASE_URL,
     echo=False,  # Set to True for SQL debugging
-    connect_args=connect_args
+    connect_args=connect_args,
+    pool_pre_ping=True,  # Test connections before using them
+    pool_recycle=300,  # Recycle connections after 5 minutes
+    pool_size=5,  # Maximum number of connections to keep open
+    max_overflow=10  # Maximum overflow connections
 )
 
 def get_session():

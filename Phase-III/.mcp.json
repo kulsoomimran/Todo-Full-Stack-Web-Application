@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "todo-tools-server": {
+      "command": "python",
+      "args": ["-m", "src.mcp.server"],
+      "cwd": "backend",
+      "env": {
+        "PYTHONPATH": "backend"
+      }
+    }
+  }
+}

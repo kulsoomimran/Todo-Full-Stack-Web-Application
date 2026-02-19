@@ -198,7 +198,7 @@ export default function AuthPage() {
             </p>
             <button
               onClick={toggleMode}
-              className="inline-flex items-center px-4 py-2 rounded-lg font-semibold text-sm bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 text-slate-300 hover:from-indigo-500/40 hover:to-purple-500/40 hover:border-indigo-400/50 hover:text-indigo-200 transition-all duration-200"
+              className="inline-flex items-center px-4 py-2 rounded-lg font-semibold text-sm bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 text-white hover:from-indigo-500/40 hover:to-purple-500/40 hover:border-indigo-400/50 hover:text-white transition-all duration-200"
             >
               {isSignUp ? 'Sign in' : 'Sign up'}
               <svg className="w-4 h-4 ml-1.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

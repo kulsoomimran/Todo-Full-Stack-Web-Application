@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 from .api.todo_router import todo_router
 from .api.auth_router import router as auth_router
+from .api.chat_router import router as chat_router
 from .core import auth, error_handler
 
 # Load environment variables
@@ -24,6 +25,7 @@ app = FastAPI(
 # Include routers
 app.include_router(auth_router, prefix="/api/v1", tags=["auth"])
 app.include_router(todo_router, prefix="/api/v1", tags=["todos"])
+app.include_router(chat_router, prefix="/api/v1", tags=["chat"])
 
 # Add CORS middleware
 app.add_middleware(
@@ -73,11 +75,19 @@ async def general_exception_handler(request: Request, exc: Exception):
     General exception handler for unexpected errors.
     Returns 500 with generic message to prevent information leakage.
     """
+    import traceback
+    import logging
+
+    logger = logging.getLogger(__name__)
+    logger.error(f"Unhandled exception: {str(exc)}")
+    logger.error(traceback.format_exc())
+
     return JSONResponse(
         status_code=500,
         content={
-            "detail": "Internal server error",
+            "detail": f"Internal server error: {str(exc)}",
             "status_code": 500,
+            "error_type": type(exc).__name__
         }
     )
 
