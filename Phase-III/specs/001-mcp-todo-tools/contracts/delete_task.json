@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "delete_task",
+  "description": "Permanently delete a task",
+  "type": "object",
+  "properties": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "User identifier for task ownership"
+        },
+        "task_id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Task identifier to delete"
+        }
+      },
+      "required": ["user_id", "task_id"],
+      "additionalProperties": false
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "const": true,
+          "description": "Always true on successful deletion"
+        },
+        "message": {
+          "type": "string",
+          "description": "Confirmation message"
+        }
+      },
+      "required": ["success", "message"],
+      "additionalProperties": false
+    }
+  },
+  "examples": [
+    {
+      "input": {
+        "user_id": "user-123",
+        "task_id": 42
+      },
+      "output": {
+        "success": true,
+        "message": "Task 42 deleted successfully"
+      }
+    }
+  ]
+}

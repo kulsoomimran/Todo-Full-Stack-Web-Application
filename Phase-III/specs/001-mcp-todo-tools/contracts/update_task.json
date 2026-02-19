@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "update_task",
+  "description": "Update task properties (title and/or description)",
+  "type": "object",
+  "properties": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "User identifier for task ownership"
+        },
+        "task_id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Task identifier to update"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "New task title (optional)"
+        },
+        "description": {
+          "type": ["string", "null"],
+          "maxLength": 1000,
+          "description": "New task description (optional)"
+        }
+      },
+      "required": ["user_id", "task_id"],
+      "additionalProperties": false
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Unique task identifier"
+        },
+        "title": {
+          "type": "string",
+          "description": "Task title"
+        },
+        "description": {
+          "type": ["string", "null"],
+          "description": "Task description"
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Task completion status"
+        },
+        "user_id": {
+          "type": "string",
+          "description": "Owner identifier"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp (ISO 8601 UTC)"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp (ISO 8601 UTC)"
+        }
+      },
+      "required": ["id", "title", "completed", "user_id", "created_at", "updated_at"],
+      "additionalProperties": false
+    }
+  },
+  "examples": [
+    {
+      "input": {
+        "user_id": "user-123",
+        "task_id": 42,
+        "title": "Updated task title"
+      },
+      "output": {
+        "id": 42,
+        "title": "Updated task title",
+        "description": "Original description",
+        "completed": false,
+        "user_id": "user-123",
+        "created_at": "2026-02-13T10:30:00Z",
+        "updated_at": "2026-02-13T11:45:00Z"
+      }
+    }
+  ]
+}

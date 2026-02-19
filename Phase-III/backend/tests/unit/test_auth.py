@@ -1,6 +1,7 @@
 
 import time
 import pytest
+import jwt
 from fastapi import HTTPException
 
 from src.core import auth

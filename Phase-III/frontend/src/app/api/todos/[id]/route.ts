@@ -68,7 +68,7 @@ export async function GET(
   }
 }
 
-// PUT /api/todos/[id] - Update a specific todo
+// PUT /api/todos/[id] - Update a specific todo (full replacement)
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -124,6 +124,69 @@ export async function PUT(
     }
   } catch (error) {
     console.error('Error in PUT /api/todos/[id]:', error);
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH /api/todos/[id] - Partially update a specific todo
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    // Extract todo ID from the URL
+    const { id } = await params;
+
+    // Extract the JWT token from the authorization header
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Unauthorized', message: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Bad Request', message: 'Todo ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Get the request body
+    const body = await request.json();
+
+    // Forward the request to the backend API using PATCH
+    const backendUrl = (process.env.BACKEND_API_URL || 'https://kulsoomimran-todos-app.hf.space/').replace(/\/+$/, '');
+    console.log('BFF todos/[id] PATCH: resolved BACKEND_API_URL=', backendUrl, 'id=', id);
+    const response = await fetch(`${backendUrl}/api/v1/todos/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    });
+    const text = await response.text();
+    console.log('BFF todos/[id] PATCH: upstream response status=', response.status, 'content-type=', response.headers.get('content-type'));
+    console.log('BFF todos/[id] PATCH: upstream body (first 1000 chars)=', text.slice(0, 1000));
+    try {
+      const parsed = JSON.parse(text);
+      return NextResponse.json(parsed, { status: response.status });
+    } catch (e) {
+      console.warn('Backend returned non-JSON response for PATCH /api/todos/[id]:', text);
+      return NextResponse.json(
+        { error: response.ok ? undefined : 'Backend error', body: text },
+        { status: response.status }
+      );
+    }
+  } catch (error) {
+    console.error('Error in PATCH /api/todos/[id]:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }

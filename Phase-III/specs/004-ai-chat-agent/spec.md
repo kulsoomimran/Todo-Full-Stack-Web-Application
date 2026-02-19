@@ -1,6 +1,6 @@
 # Feature Specification: AI Chat Agent & Integration
 
-**Feature Branch**: `001-ai-chat-agent`
+**Feature Branch**: `004-ai-chat-agent`
 **Created**: 2026-02-11
 **Status**: Draft
 **Input**: User description: "Project: Phase-III Spec-4 (AI Chat Agent & Integration)

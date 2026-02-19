@@ -6,7 +6,12 @@
       "Bash(.venvScriptspython -m pytest tests/integration/test_auth_todo_integration.py -v)",
       "Bash(python -m pip install:*)",
       "Bash(python -m pytest:*)",
-      "Bash(dir frontendsrcservices)"
+      "Bash(dir frontendsrcservices)",
+      "Bash(./start.sh:*)",
+      "Bash(test:*)",
+      "Bash(taskkill /F /IM uvicorn.exe)",
+      "Bash(\"backend/src/mcp/__init__.py\" << 'EOF'\n\"\"\"\nMCP \\(Model Context Protocol\\) Server for Todo Operations\n\nThis module provides a stateless MCP server that exposes 5 todo CRUD tools:\n- add_task: Create a new task\n- list_tasks: Retrieve all tasks for a user\n- update_task: Update task properties\n- complete_task: Toggle task completion status\n- delete_task: Permanently remove a task\n\nAll tools enforce user_id-based authorization and reuse existing TodoService.\n\"\"\"\n\n__version__ = \"1.0.0\"\nEOF)",
+      "mcp__context7__query-docs"
     ]
   }
 }

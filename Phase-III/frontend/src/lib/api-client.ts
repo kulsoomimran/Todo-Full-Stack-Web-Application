@@ -35,7 +35,7 @@ export const apiClient = {
     }
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ??
-  'https://kulsoomimran-todos-app.hf.space';
+  'http://localhost:8002';
 
 const requestUrl = `${BASE_URL}/api/v1${url}`;
 
@@ -190,7 +190,7 @@ export const bffApiClient = {
     }
 
     const response = await fetch(`/api/todos/${id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
